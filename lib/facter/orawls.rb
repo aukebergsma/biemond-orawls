@@ -79,17 +79,17 @@ def get_orainst_loc
 end
 
 def get_orainst_products(path)
-  Puppet.debug "Inventory Path: #{path}"
+  Puppet.debug "orawls.rb - get_orainst_products - Inventory Path: #{path}"
   unless path.nil?
     if FileTest.exists?(path + '/ContentsXML/inventory.xml')
-      Puppet.debug "Inventory file #{path}/ContentsXML/inventory.xml exists"
+      Puppet.debug "orawls.rb - get_orainst_products - Inventory file #{path}/ContentsXML/inventory.xml exists"
       file = File.read(path + '/ContentsXML/inventory.xml')
       doc = REXML::Document.new file
       software =  ''
       patches_fact = {}
       doc.elements.each('/INVENTORY/HOME_LIST/HOME') do |element|
         str = element.attributes['LOC']
-        Puppet.debug "Inventory Home #{str}"
+        Puppet.debug "orawls.rb - get_orainst_products - Oracle Home String #{str}"
         unless str.nil?
           software += str + ';'
           if str.include? 'plugins'
@@ -101,6 +101,7 @@ def get_orainst_products(path)
           else
             home = str.gsub('/', '_').gsub("\\", '_').gsub('c:', '_c').gsub('d:', '_d').gsub('e:', '_e')
             opatchver = get_opatch_version(str)
+            Puppet.debug "orawls.rb - get_orainst_products - Oracle Home #{home}: #{opatchver}"
             Facter.add("orawls_inst_opatch#{home}") do
               setcode do
                 opatchver
