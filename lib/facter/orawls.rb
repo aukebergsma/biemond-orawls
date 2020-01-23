@@ -79,15 +79,17 @@ def get_orainst_loc
 end
 
 def get_orainst_products(path)
-  # puts "get_orainst_products with path: "+path
+  Puppet.debug "Inventory Path: #{path}"
   unless path.nil?
     if FileTest.exists?(path + '/ContentsXML/inventory.xml')
+      Puppet.debug "Inventory file #{path}/ContentsXML/inventory.xml exists"
       file = File.read(path + '/ContentsXML/inventory.xml')
       doc = REXML::Document.new file
       software =  ''
       patches_fact = {}
       doc.elements.each('/INVENTORY/HOME_LIST/HOME') do |element|
         str = element.attributes['LOC']
+        Puppet.debug "Inventory Home #{str}"
         unless str.nil?
           software += str + ';'
           if str.include? 'plugins'
@@ -106,13 +108,13 @@ def get_orainst_products(path)
             end
 
             patches = get_opatch_patches(str)
-            # Puppet.info "-patches hash- #{patches}"
+            Puppet.debug "-patches hash- #{patches}"
             patches_fact[str] = patches unless patches.nil?
           end
         end
       end
       Facter.add('ora_mdw_opatch_patches') do
-        # Puppet.info "-all patches hash- #{patches_fact}"
+        Puppet.debug "-all patches hash- #{patches_fact}"
         setcode { patches_fact }
       end
       return software
