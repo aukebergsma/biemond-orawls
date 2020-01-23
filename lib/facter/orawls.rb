@@ -766,8 +766,11 @@ def get_domain(domain_path, n)
   end
 end
 
+Puppet.debug "orawls.rb 769"
 oraInstPath   = get_orainst_loc
+Puppet.debug "orawls.rb 771"
 oraProducts   = get_orainst_products(oraInstPath)
+Puppet.debug "orawls.rb 773"
 
 mdw11gHomes   = get_middleware_1036_home
 mdw12cHomes   = get_middleware_1212_home(oraProducts)
